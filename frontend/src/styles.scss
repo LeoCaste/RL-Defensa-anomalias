@@ -1,4 +1,9 @@
 :root {
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 32px;
+  --space-xl: 48px;
   --cream: #F6F1E8;
   --card: #FFFDF8;
   --text: #102A43;
@@ -34,7 +39,7 @@ a { color: inherit; }
 .page {
   max-width: 1180px;
   margin: 0 auto;
-  padding: 36px 22px 52px;
+  padding: var(--space-lg) var(--space-md) var(--space-xl);
 }
 
 .hero,
@@ -47,7 +52,7 @@ a { color: inherit; }
 
 .hero { padding: clamp(28px, 4vw, 48px); }
 
-.card { padding: 22px; }
+.card { padding: var(--space-md); }
 
 h1,
 h2,
@@ -64,7 +69,7 @@ h3 { font-size: 1.08rem; }
 p { line-height: 1.65; margin: 0 0 12px; }
 p:last-child { margin-bottom: 0; }
 
-.grid { display: grid; gap: 20px; }
+.grid { display: grid; gap: var(--space-md); }
 .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
@@ -113,7 +118,7 @@ p:last-child { margin-bottom: 0; }
 
 table { width: 100%; border-collapse: collapse; min-width: 620px; }
 th,
-td { padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+td { padding: var(--space-sm) var(--space-md); border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
 th { color: var(--navy); font-size: .78rem; letter-spacing: .04em; text-transform: uppercase; background: rgba(246, 241, 232, .62); }
 tbody tr:hover { background: rgba(15, 118, 110, .045); }
 tbody tr:last-child td,
@@ -134,7 +139,7 @@ input:focus,
 select:focus { outline: 3px solid rgba(15, 118, 110, .16); border-color: var(--teal); }
 input[type='range'] { accent-color: var(--teal); padding-inline: 0; }
 
-label { display: grid; gap: 7px; font-weight: 800; }
+label { display: grid; gap: var(--space-xs); font-weight: 800; }
 small { color: var(--muted); font-weight: 500; line-height: 1.35; }
 
 .muted { color: var(--muted); }
@@ -144,7 +149,7 @@ small { color: var(--muted); font-weight: 500; line-height: 1.35; }
 .notice,
 .empty-state {
   border-radius: 18px;
-  padding: 14px 16px;
+  padding: var(--space-sm);
   border: 1px solid var(--line);
   background: rgba(255, 253, 248, .82);
 }
@@ -162,12 +167,12 @@ small { color: var(--muted); font-weight: 500; line-height: 1.35; }
 }
 
 @media (max-width: 760px) {
-  .page { padding: 22px 14px 40px; }
+  .page { padding: var(--space-md) var(--space-sm) var(--space-xl); }
   .grid.two,
   .grid.three { grid-template-columns: 1fr; }
   .hero,
   .card { border-radius: 20px; }
-  .card { padding: 18px; }
+  .card { padding: var(--space-sm); }
   .btn { width: 100%; }
   table { min-width: 560px; }
 }
