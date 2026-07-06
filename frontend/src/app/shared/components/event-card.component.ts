@@ -1,0 +1,10 @@
+import { Component, Input } from '@angular/core';
+import { NetworkEvent } from '../../core/models/simulation.models';
+
+@Component({
+  selector: 'app-event-card',
+  standalone: true,
+  template: `<article class="card signal-card"><h3>Evento actual</h3>@if(event){<p><span class="pill">{{event.riskState}}</span> <b>{{event.eventType}}</b> · {{event.realLabel}}</p><div class="grid two signals"><span>Logins fallidos <b>{{event.failedLogins}}</b></span><span>Frecuencia <b>{{event.connectionFrequency}}</b></span><span>Puerto <b>{{event.targetPort}}</b></span><span>Reputación IP <b>{{event.ipReputation}}</b></span><span>Tráfico <b>{{event.trafficVolume}}</b></span></div>}@else{<p class="empty-state">Ejecuta un evento para observar señales de red.</p>}</article>`,
+  styles: [`.signal-card{min-height:100%}.signals{margin-top:14px}.signals span{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(246,241,232,.34);display:flex;justify-content:space-between;gap:12px}`]
+})
+export class EventCardComponent { @Input() event: NetworkEvent | null = null; }
