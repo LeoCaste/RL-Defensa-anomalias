@@ -16,12 +16,13 @@ import java.time.Instant;
 @AllArgsConstructor
 public class NetworkEvent {
     private String id;
-    private EventType type;
-    private EventLabel label;
+    private EventType eventType;
+    private int failedLogins;
+    private int connectionFrequency;
+    private int targetPort;
+    private int ipReputation;
+    private long trafficVolume;
+    private EventLabel realLabel;
     private RiskState riskState;
-    private double anomalyScore;
-    private int sourceReputation;
-    private int requestRate;
-    private long bytesTransferred;
     private Instant timestamp;
 }

@@ -1,7 +1,6 @@
 package com.rlanomaly.backend.dto;
 
 import com.rlanomaly.backend.model.AgentConfig;
-import com.rlanomaly.backend.model.NetworkEvent;
 import com.rlanomaly.backend.model.PolicyEntry;
 import com.rlanomaly.backend.model.QTableEntry;
 import com.rlanomaly.backend.model.SimulationMetrics;
@@ -17,6 +16,6 @@ public record SimulationResponse(
         List<QTableEntry> qTable,
         List<PolicyEntry> learnedPolicy,
         List<Double> rewardHistory,
-        List<NetworkEvent> recentHistory
+        List<SimulationResult> recentHistory
 ) {
 }
