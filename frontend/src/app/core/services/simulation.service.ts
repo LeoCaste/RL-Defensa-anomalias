@@ -5,7 +5,7 @@ import { AgentConfig, SimulationResponse, TrainRequest } from '../models/simulat
 
 @Injectable({ providedIn: 'root' })
 export class SimulationService {
-  private readonly baseUrl = 'http://localhost:8080/api/simulation';
+  private readonly baseUrl = '/api/simulation';
   constructor(private readonly http: HttpClient) {}
   status(): Observable<SimulationResponse> { return this.http.get<SimulationResponse>(`${this.baseUrl}/status`); }
   step(): Observable<SimulationResponse> { return this.http.post<SimulationResponse>(`${this.baseUrl}/step`, {}); }

@@ -5,7 +5,7 @@ import { ExperimentRequest, ExperimentResponse } from '../models/experiment.mode
 
 @Injectable({ providedIn: 'root' })
 export class ExperimentService {
-  private readonly baseUrl = 'http://localhost:8080/api/experiments';
+  private readonly baseUrl = '/api/experiments';
   constructor(private readonly http: HttpClient) {}
   list(): Observable<ExperimentResponse[]> { return this.http.get<ExperimentResponse[]>(this.baseUrl); }
   save(request: ExperimentRequest): Observable<ExperimentResponse> { return this.http.post<ExperimentResponse>(this.baseUrl, request); }
