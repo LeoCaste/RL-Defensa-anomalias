@@ -1,0 +1,57 @@
+# Local documentation / agent notes
+AGENTS.md
+Guia-inicial.md
+TODO.md
+README_AGENTE_LOCAL.md
+
+# Java / Spring Boot
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+.mvn/wrapper/maven-wrapper.jar
+
+# H2 database files
+*.mv.db
+*.trace.db
+*.h2.db
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+.npm/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDEs and editors
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.swp
+*.swo
+
+# Coverage and reports
+coverage/
+reports/
+*.lcov
