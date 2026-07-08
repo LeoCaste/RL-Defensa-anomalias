@@ -22,4 +22,4 @@ services:
       backend:
         condition: service_started
     ports:
-      - "4200:80"
+      - "80:80"
