@@ -4,7 +4,6 @@ import { TheoryComponent } from './features/theory/theory.component';
 import { QLearningComponent } from './features/q-learning/q-learning.component';
 import { CaseStudyComponent } from './features/case-study/case-study.component';
 import { LaboratoryComponent } from './features/laboratory/laboratory.component';
-import { ExperimentsComponent } from './features/experiments/experiments.component';
 import { LimitationsComponent } from './features/limitations/limitations.component';
 
 export const routes: Routes = [
@@ -13,7 +12,8 @@ export const routes: Routes = [
   { path: 'q-learning', component: QLearningComponent },
   { path: 'caso-practico', component: CaseStudyComponent },
   { path: 'laboratorio', component: LaboratoryComponent },
-  { path: 'experimentos', component: ExperimentsComponent },
+  { path: 'experimentos', redirectTo: 'laboratorio', pathMatch: 'full' },
+  { path: 'experiments', redirectTo: 'laboratorio', pathMatch: 'full' },
   { path: 'limitaciones', component: LimitationsComponent },
   { path: '**', redirectTo: '' }
 ];

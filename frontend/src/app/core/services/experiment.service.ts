@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { ExperimentRequest, ExperimentResponse } from '../models/experiment.models';
 
 @Injectable({ providedIn: 'root' })
 export class ExperimentService {
-  private readonly baseUrl = '/api/experiments';
+  private readonly baseUrl = `${environment.apiBaseUrl}/experiments`;
   constructor(private readonly http: HttpClient) {}
   list(): Observable<ExperimentResponse[]> { return this.http.get<ExperimentResponse[]>(this.baseUrl); }
   save(request: ExperimentRequest): Observable<ExperimentResponse> { return this.http.post<ExperimentResponse>(this.baseUrl, request); }
