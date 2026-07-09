@@ -252,7 +252,7 @@ El proyecto está dockerizado. Desde la raíz del repositorio, ejecutar:
 
 Luego abrir la aplicación en el navegador:
 
-    http://localhost:4200
+    http://localhost
 
 Para detener los contenedores:
 
