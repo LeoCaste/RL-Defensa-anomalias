@@ -236,18 +236,42 @@ type Phase =
         }
       </article>
       <article class="card mini-decision">
-        <h3>Aprendizaje</h3>
+        <h3>¿Qué aprendió el agente?</h3>
         @if (result) {
-          <p class="decision-text">
-            {{ result.explanation | labelEs: "text" }}
-          </p>
+          <div class="learning-detail">
+            <p><span>Estado</span><b>{{ result.state | labelEs }}</b></p>
+            <p><span>Acción</span><b>{{ result.action | labelEs }}</b></p>
+            <p>
+              <span>Decisión</span
+              ><b>{{ result.exploration ? "Exploración" : "Explotación" }}</b>
+            </p>
+            <p>
+              <span>Recompensa</span
+              ><b [class.positive]="result.reward >= 0" [class.negative]="result.reward < 0"
+                >{{ result.reward >= 0 ? "+" : "" }}{{ result.reward | number: "1.0-2" }}</b
+              >
+            </p>
+            <p>
+              <span>Valor Q anterior</span
+              ><b>{{ previousQValue(result) | number: "1.0-2" }}</b>
+            </p>
+            <p>
+              <span>Valor Q nuevo</span
+              ><b>{{ updatedQValue(result) | number: "1.0-2" }}</b>
+            </p>
+          </div>
           <p class="q-update">
-            Q({{ result.state | labelEs }}, {{ result.action | labelEs }})
-            actualizada
+            Cambio: {{ qChange(result) >= 0 ? "+" : ""
+            }}{{ qChange(result) | number: "1.0-2" }} ·
+            {{ qChangeLabel(result) }}
+          </p>
+          <p class="decision-text">
+            {{ qChangeExplanation(result) }}
           </p>
         } @else {
           <p class="empty-state">
-            El agente actualizará la Q-table después de cada recompensa.
+            Procesa un evento para observar cómo cambia el conocimiento del
+            agente.
           </p>
         }
       </article>
@@ -633,6 +657,26 @@ type Phase =
       .decision-text {
         color: var(--muted);
       }
+      .learning-detail {
+        display: grid;
+        gap: 8px;
+      }
+      .learning-detail p {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        border-bottom: 1px solid var(--line);
+        padding: 7px 0;
+        margin: 0;
+      }
+      .learning-detail span {
+        color: var(--muted);
+        font-weight: 800;
+      }
+      .learning-detail b {
+        color: var(--navy);
+        text-align: right;
+      }
       .q-update {
         border-left: 4px solid var(--teal);
         padding-left: 10px;
@@ -855,6 +899,31 @@ export class LiveSimulationViewComponent implements OnDestroy {
     if (this.phase === "learning")
       return `Q(${displayLabel(this.result.state)}, ${displayLabel(this.result.action)}) actualizada`;
     return "Preparando simulación";
+  }
+  previousQValue(result: SimulationResult) {
+    return result.previousQValue ?? result.selectedQValue;
+  }
+  updatedQValue(result: SimulationResult) {
+    return result.updatedQValue ?? result.selectedQValue;
+  }
+  qChange(result: SimulationResult) {
+    return this.updatedQValue(result) - this.previousQValue(result);
+  }
+  qChangeLabel(result: SimulationResult) {
+    const change = this.qChange(result);
+    if (change > 0.005) return "Aumentó";
+    if (change < -0.005) return "Disminuyó";
+    return "Sin cambios relevantes";
+  }
+  qChangeExplanation(result: SimulationResult) {
+    const change = this.qChange(result);
+    if (change > 0.005) {
+      return "El valor de esta acción aumentó porque el resultado obtenido fue favorable para el agente. Esta decisión reforzó la acción para situaciones similares.";
+    }
+    if (change < -0.005) {
+      return "El valor de esta acción disminuyó porque el resultado obtenido fue desfavorable.";
+    }
+    return "El conocimiento asociado a esta decisión presentó un cambio pequeño en este paso.";
   }
   private cycleMs() {
     return 2800 / this.speed;

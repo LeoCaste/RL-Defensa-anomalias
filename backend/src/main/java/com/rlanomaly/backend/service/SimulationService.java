@@ -108,7 +108,8 @@ public class SimulationService {
         ActionSelection selection = agentService.chooseAction(event.getRiskState(), config);
         RewardResult reward = rewardService.calculateReward(event, selection.getAction());
         NetworkEvent nextEvent = environmentService.generateEvent(config);
-        agentService.updateQValue(event.getRiskState(), selection.getAction(), reward.getReward(), nextEvent.getRiskState(), config);
+        double previousQValue = selection.getQValue();
+        double updatedQValue = agentService.updateQValue(event.getRiskState(), selection.getAction(), reward.getReward(), nextEvent.getRiskState(), config);
         var metrics = metricsService.record(event, selection.getAction(), reward.getReward());
         rewardHistory.add(reward.getReward());
 
@@ -119,6 +120,8 @@ public class SimulationService {
                 .action(selection.getAction())
                 .exploration(selection.isExploration())
                 .selectedQValue(selection.getQValue())
+                .previousQValue(previousQValue)
+                .updatedQValue(updatedQValue)
                 .reward(reward.getReward())
                 .outcomeType(reward.getOutcomeType())
                 .explanation(explain(event, selection, reward))

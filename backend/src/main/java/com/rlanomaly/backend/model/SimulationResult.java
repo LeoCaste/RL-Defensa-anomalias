@@ -21,6 +21,8 @@ public class SimulationResult {
     private AgentAction action;
     private boolean exploration;
     private double selectedQValue;
+    private Double previousQValue;
+    private Double updatedQValue;
     private double reward;
     private RewardOutcomeType outcomeType;
     private String explanation;
