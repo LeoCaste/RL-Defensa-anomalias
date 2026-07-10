@@ -1,3 +1,25 @@
-import { Component } from '@angular/core';
-@Component({selector:'app-limitations',standalone:true,template:`<section class="page"><div class="grid two"><article class="card"><h1>Limitaciones</h1><p>El entorno es simulado, los estados son discretos y la Q-table no escala a tráfico real de alta dimensionalidad. No reemplaza IDS reales ni modelos supervisados entrenados con datos históricos.</p></article><article class="card"><h1>Referencias</h1><p>Sutton & Barto, Reinforcement Learning. Watkins & Dayan, Q-Learning. Documentación de Spring Boot y Angular.</p></article></div></section>`})
+import { Component } from "@angular/core";
+@Component({
+  selector: "app-limitations",
+  standalone: true,
+  template: `<section class="page">
+    <div class="grid two">
+      <article class="card">
+        <h1>Limitaciones</h1>
+        <p>
+          El entorno es simulado, los estados son discretos y la Q-table no
+          escala a tráfico real de alta dimensionalidad. No reemplaza IDS reales
+          ni modelos supervisados entrenados con datos históricos.
+        </p>
+      </article>
+      <article class="card">
+        <h1>Referencias</h1>
+        <p>
+          Sutton & Barto, Reinforcement Learning. Watkins & Dayan, Q-Learning.
+          Documentación de Spring Boot y Angular.
+        </p>
+      </article>
+    </div>
+  </section>`,
+})
 export class LimitationsComponent {}
