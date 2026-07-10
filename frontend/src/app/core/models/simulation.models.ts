@@ -51,6 +51,8 @@ export interface SimulationResult {
   action: AgentAction;
   exploration: boolean;
   selectedQValue: number;
+  previousQValue?: number;
+  updatedQValue?: number;
   reward: number;
   outcomeType: string;
   explanation: string;

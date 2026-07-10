@@ -266,6 +266,72 @@ const CONFIG_PRESETS: Record<
           [policy]="state.learnedPolicy"
         />
       </div>
+      <article class="card panel learning-chart-card">
+        <h3>Evolución del aprendizaje</h3>
+        <p class="muted">
+          La línea representa la recompensa promedio de los últimos
+          {{ chartWindowSize() }} episodios. Una tendencia ascendente o estable
+          indica que el agente está aprendiendo decisiones más convenientes.
+        </p>
+        @if (chartPoints().length) {
+          <div
+            class="chart-wrap"
+            role="img"
+            aria-label="Gráfico de recompensa promedio por episodio"
+          >
+            <span class="axis-label y">Recompensa promedio</span>
+            <svg viewBox="0 0 640 260" preserveAspectRatio="none">
+              <line x1="52" y1="18" x2="52" y2="220" class="axis" />
+              <line x1="52" y1="220" x2="620" y2="220" class="axis" />
+              <line
+                x1="52"
+                [attr.y1]="zeroY()"
+                x2="620"
+                [attr.y2]="zeroY()"
+                class="zero-line"
+              />
+              <text x="46" [attr.y]="zeroY() - 4" class="tick end">0</text>
+              <path [attr.d]="chartPath()" class="reward-line" />
+              @for (point of chartPoints(); track point.episode) {
+                <circle
+                  class="reward-hit-area"
+                  [attr.cx]="point.x"
+                  [attr.cy]="point.y"
+                  r="9"
+                >
+                  <title>
+                    Episodio {{ point.episode }} · Recompensa promedio
+                    {{ point.average | number: "1.0-2" }}
+                  </title>
+                </circle>
+              }
+              @for (tick of episodeTicks(); track tick.episode) {
+                <text
+                  [attr.x]="tick.x"
+                  y="240"
+                  class="tick"
+                  [class.end]="tick.anchor === 'end'"
+                  [class.middle]="tick.anchor === 'middle'"
+                >
+                  {{ tick.episode }}
+                </text>
+              }
+              <text x="46" y="24" class="tick end">
+                {{ chartMax() | number: "1.0-1" }}
+              </text>
+              <text x="46" y="220" class="tick end">
+                {{ chartMin() | number: "1.0-1" }}
+              </text>
+            </svg>
+            <span class="axis-label x">Episodios</span>
+          </div>
+        } @else {
+          <p class="empty chart-empty">
+            Ejecuta un entrenamiento para visualizar la evolución de las
+            recompensas.
+          </p>
+        }
+      </article>
       <article class="card panel">
         <h3>Cómo interpretar los resultados</h3>
         <ul class="guide">
@@ -434,6 +500,79 @@ const CONFIG_PRESETS: Record<
         color: var(--muted);
         padding: 20px;
       }
+      .learning-chart-card h3 {
+        margin-bottom: 8px;
+      }
+      .chart-wrap {
+        position: relative;
+        margin-top: 18px;
+        padding: 18px 8px 28px 34px;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        background: rgba(246, 241, 232, 0.32);
+      }
+      .chart-wrap svg {
+        display: block;
+        width: 100%;
+        height: 280px;
+        overflow: visible;
+      }
+      .axis,
+      .zero-line {
+        stroke: rgba(11, 31, 51, 0.22);
+        stroke-width: 1.5;
+      }
+      .zero-line {
+        stroke-dasharray: 5 6;
+      }
+      .reward-line {
+        fill: none;
+        stroke: var(--teal);
+        stroke-width: 4;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .reward-hit-area {
+        fill: transparent;
+        stroke: transparent;
+        cursor: crosshair;
+      }
+      .reward-hit-area:hover {
+        fill: #fffefa;
+        stroke: var(--teal);
+        stroke-width: 3;
+      }
+      .tick,
+      .axis-label {
+        fill: var(--muted);
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 900;
+      }
+      .tick.end {
+        text-anchor: end;
+      }
+      .tick.middle {
+        text-anchor: middle;
+      }
+      .axis-label {
+        position: absolute;
+      }
+      .axis-label.y {
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%) rotate(-90deg);
+        transform-origin: left center;
+      }
+      .axis-label.x {
+        right: 24px;
+        bottom: 8px;
+      }
+      .chart-empty {
+        border: 1px dashed var(--line);
+        border-radius: 18px;
+        background: rgba(246, 241, 232, 0.32);
+      }
       @media (max-width: 980px) {
         .metrics-grid {
           grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -572,6 +711,88 @@ export class ExperimentsComponent implements OnInit, OnChanges {
   }
   formatAverageReward(state: SimulationResponse) {
     return state.metrics.averageReward.toFixed(2);
+  }
+  chartPoints() {
+    return this.downsamplePoints(this.allChartPoints());
+  }
+  chartWindowSize() {
+    const rewards = this.state?.rewardHistory ?? [];
+    if (!rewards.length) return 20;
+    return Math.max(1, Math.min(20, rewards.length));
+  }
+  episodeTicks() {
+    const rewards = this.state?.rewardHistory ?? [];
+    if (!rewards.length) return [];
+    const tickCount = Math.min(5, rewards.length);
+    const width = 568;
+    return Array.from({ length: tickCount }, (_, index) => {
+      const ratio = tickCount === 1 ? 0 : index / (tickCount - 1);
+      const episode = Math.round(1 + ratio * (rewards.length - 1));
+      return {
+        episode,
+        x: 52 + ratio * width,
+        anchor:
+          index === 0 ? "start" : index === tickCount - 1 ? "end" : "middle",
+      };
+    });
+  }
+  private allChartPoints() {
+    const rewards = this.state?.rewardHistory ?? [];
+    if (!rewards.length) return [];
+    const windowSize = this.chartWindowSize();
+    const min = this.chartMin();
+    const max = this.chartMax();
+    const range = max - min || 1;
+    const width = 568;
+    const height = 202;
+    return rewards.map((_, index) => {
+      const start = Math.max(0, index - windowSize + 1);
+      const sample = rewards.slice(start, index + 1);
+      const average = sample.reduce((sum, value) => sum + value, 0) / sample.length;
+      return {
+        episode: index + 1,
+        average,
+        x: 52 + (rewards.length === 1 ? 0 : (index / (rewards.length - 1)) * width),
+        y: 220 - ((average - min) / range) * height,
+      };
+    });
+  }
+  private downsamplePoints<T>(points: T[]) {
+    const maxPoints = 140;
+    if (points.length <= maxPoints) return points;
+    return Array.from({ length: maxPoints }, (_, index) => {
+      const sourceIndex = Math.round((index / (maxPoints - 1)) * (points.length - 1));
+      return points[sourceIndex];
+    });
+  }
+  chartPath() {
+    return this.chartPoints()
+      .map((point, index) => `${index === 0 ? "M" : "L"}${point.x},${point.y}`)
+      .join(" ");
+  }
+  chartMin() {
+    const values = this.movingAverages();
+    return Math.min(0, ...values);
+  }
+  chartMax() {
+    const values = this.movingAverages();
+    return Math.max(0, ...values);
+  }
+  zeroY() {
+    const min = this.chartMin();
+    const max = this.chartMax();
+    const range = max - min || 1;
+    return 220 - ((0 - min) / range) * 202;
+  }
+  private movingAverages() {
+    const rewards = this.state?.rewardHistory ?? [];
+    if (!rewards.length) return [0];
+    const windowSize = this.chartWindowSize();
+    return rewards.map((_, index) => {
+      const start = Math.max(0, index - windowSize + 1);
+      const sample = rewards.slice(start, index + 1);
+      return sample.reduce((sum, value) => sum + value, 0) / sample.length;
+    });
   }
   private setState(state: SimulationResponse, emit = true) {
     this.state = state;
